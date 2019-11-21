@@ -3,27 +3,32 @@ import java.util.Random;
 import java.util.Scanner;
 
 class blackjack {
-	String[] getCards() {
+	card[] getCards() {
+		card[] kaarten = new card[52];
+		for (int x = 0; x < kaarten.length; x++) {
+			kaarten[x] = new card();
+		}
+		
 		String[] types = {"H", "K", "S", "R"};
 		String[] nummers = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Boer", "Vrouw", "Koning", "Aas"};
-		String[] kaarten = new String[52];
 		int indexNum = 0;
 		for (String type : types ) {
 			for (String nummer : nummers) {
-				kaarten[indexNum] = type + nummer;
+				kaarten[indexNum].type = type;
+				kaarten[indexNum].value = nummer;
 				indexNum++;
 			}
 		}
 	return kaarten;
 	}
 	
-	void shuffleCards(String[] oldCards) {
+	void shuffleCards(card[] oldCards) {
 		Random random = new Random();
 		for (int index = 0; index < oldCards.length; index++) {
 			int randCard = random.nextInt(oldCards.length);
-			String card = oldCards[randCard];
+			card originalCard = oldCards[randCard];
 			oldCards[randCard] = oldCards[index];
-			oldCards[index] = card;
+			oldCards[index] = originalCard;
 		}
 	}
 	
@@ -38,21 +43,29 @@ class blackjack {
 		return input;
 	}
 	
-	void spelen(String[] cards) {
-		ArrayList<String> hand = new ArrayList<>();
-		for (int beurt = 0; beurt < 3; beurt++) { //beurt < cards.length
+	void spelen(card[] cards) {
+		ArrayList<card> hand = new ArrayList<>();
+		for (int beurt = 0; beurt < 52; beurt++) { //beurt < cards.length
 			// user input
 			String input = getInput();
-			// kaart trekken
-			if (input.equals("k")) {
+			
+			if (input.equals("k")) { // kaart trekken
 				hand.add(cards[beurt]);
+				showHand(hand);
+			} else if(input.equals("p")) { // passen
+				showHand(hand);
+			} else {
+				break;
 			}
-			System.out.print("Hand: ");
-			for (int kaart = 0; kaart < hand.size(); kaart++) {
-				System.out.print(hand.get(kaart));
-			}
-			System.out.println();
 		}
+	}
+	
+	void showHand(ArrayList<card> hand) {
+		System.out.print("Hand: ");
+		for (int kaart = 0; kaart < hand.size(); kaart++) {
+			System.out.print(hand.get(kaart).type + hand.get(kaart).value);
+		}
+		System.out.println();
 	}
 }
 
